@@ -26,13 +26,22 @@ object Test extends IOApp {
   }
 
   private def onAuthFailure[F[_]: Monad]: AuthedService[Error, F] = Kleisli { req: AuthedRequest[F, Error]  =>
-    req.authInfo match {
-      case AnyError => OptionT.pure[F](
-        Response[F](
-          status = Status.Unauthorized
-        )
-      )
+    object dsl extends Http4sDsl[F]
+    import dsl._
+
+    // Only apply authentication to "/welcome"
+    req.req match {
+      case GET -> Root / "welcome" =>
+        req.authInfo match {
+          case AnyError => OptionT.pure[F](
+            Response[F](
+              status = Status.Unauthorized
+            )
+          )
+        }
+      case _ => OptionT.none[F, Response[F]]
     }
+
   }
 
   private def authMiddleware[F[_]: Monad]: AuthMiddleware[F, Header] =
