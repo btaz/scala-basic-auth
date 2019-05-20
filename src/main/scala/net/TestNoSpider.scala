@@ -14,9 +14,6 @@ import scala.language.higherKinds
 
 object TestNoSpider extends IOApp {
 
-  sealed trait Error
-  case object AnyError extends Error
-
   private def authUser[F[_]: Monad]: Kleisli[OptionT[F, ?], Request[F], Header] = Kleisli { request: Request[F] =>
     val result: Option[Header] = request.headers.get(CaseInsensitiveString("Authorization"))
     result match {
