@@ -1,3 +1,5 @@
+/*
+
 package net
 
 import cats._
@@ -45,3 +47,5 @@ object TestNoSpider extends IOApp {
       .map(_ => ExitCode.Success)
 
 }
+
+*/
